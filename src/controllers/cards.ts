@@ -50,7 +50,7 @@ export const deleteCard = (req: Request, res: Response) => {
     .findByIdAndDelete(cardId)
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
-      const ERROR_CODE = 404;
+      const ERROR_CODE = 400;
       if (err.name === "CastError") {
         res
           .status(ERROR_CODE)
@@ -70,19 +70,19 @@ export const likeCard = (req: Request, res: Response) => {
     cardId,
     { $addToSet: { likes: id } }, // добавить _id в массив, если его там нет
     { new: true })
+    .orFail(new Error('NotValidId'))
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
-      const ERROR_CODE = 400;
       if (err.name === "ValidationError") {
         res
-          .status(ERROR_CODE)
+          .status(400)
           .send({
             message: `Переданы некорректные данные в методы обновления профиля пользователя ${err.message}`,
           });
       }
-      if (err.name === "CastError") {
+      if (err.message === "NotValidId") {
         res
-          .status(ERROR_CODE)
+          .status(404)
           .send({
             message: `Пользователь с указанным _id не найден ${err.message}`,
           });
@@ -97,21 +97,21 @@ export const dislikeCard = (req: Request, res: Response) => {
   return card
     .findByIdAndUpdate(
     cardId,
-    { $pull: { likes: id } }, // убрать _id из массива
+    { $pull: { likes: id } },
     { new: true })
+    .orFail(new Error('NotValidId'))
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
-      const ERROR_CODE = 400;
       if (err.name === "ValidationError") {
         res
-          .status(ERROR_CODE)
+          .status(400)
           .send({
             message: `Переданы некорректные данные в методы обновления профиля пользователя ${err.message}`,
           });
       }
-      if (err.name === "CastError") {
+      if (err.message === "NotValidId") {
         res
-          .status(ERROR_CODE)
+          .status(404)
           .send({
             message: `Пользователь с указанным _id не найден ${err.message}`,
           });
