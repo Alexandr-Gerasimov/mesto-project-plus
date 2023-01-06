@@ -26,19 +26,26 @@ export const getUser = (req: Request, res: Response) => {
 
   return user
     .findById(id)
+    .orFail(new Error('NotValidId'))
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      const ERROR_CODE = 404;
       if (err.name === "CastError") {
         res
-          .status(ERROR_CODE)
+          .status(400)
+          .send({
+            message: `Переданы некорректные данные ${err.message}`,
+          });
+      }
+      if (err.name === "NotValidId") {
+        res
+          .status(404)
           .send({
             message: `Пользователь по указанному _id не найден ${err.message}`,
           });
       }
       res.status(500).send({ message: `Ошибка по умолчанию ${err}` });
     });
-};
+}; 
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
@@ -64,7 +71,7 @@ export const patchUser = (req: Request, res: Response) => {
   const id = req.user._id;
 
   return user
-    .findByIdAndUpdate(id, { name, about })
+    .findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true})
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       const ERROR_CODE = 400;
@@ -91,7 +98,7 @@ export const patchAvatarUser = (req: Request, res: Response) => {
   const id = req.user._id;
 
   return user
-    .findByIdAndUpdate(id, { avatar })
+    .findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true})
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       const ERROR_CODE = 400;
