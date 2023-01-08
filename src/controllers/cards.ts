@@ -33,7 +33,14 @@ export const deleteCard = (req: Request, res: Response) => {
   const {cardId} = req.params
   console.log(cardId)
   return card
-    .findByIdAndDelete(cardId)
+    .findById(cardId)
+    .then((card) => {
+      if (card?.owner.toString() !== id) {
+        throw new AuthorizationError(`Недостаточно прав для удаления карточки`);
+      }
+      return card
+    })
+    .then((card) => card.delete())
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === "CastError") {
