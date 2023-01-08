@@ -1,21 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import card from "../models/card";
 import user from "../models/user";
+import { NotFoundError, NotValidError, AuthorizationError } from '../middlewares/errors'
 
-class NewError extends Error {
-  statusCode: number;
-  constructor(message: string) {
-    super(message);
-    this.statusCode = 404;
-  }
-}
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   return card
     .find({})
     .then((users) => {
       if (!users) {
-        throw new NewError("Пользователи не найдены");
+        throw new NotFoundError("Карточки не найдены");
       }
       res.send({ data: users });
     })
@@ -23,22 +17,14 @@ export const getCards = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const createCard = (req: Request, res: Response) => {
-  const owner = req.user._id
-  const { name, link } = req.body;
 
   return card
-    .create({ name, link, owner })
+    .create({ name: req.body.name, link: req.body.link, owner: req.user._id })
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
-      const ERROR_CODE = 400;
       if (err.name === "ValidationError") {
-        res
-          .status(ERROR_CODE)
-          .send({
-            message: `Переданы некорректные данные в методы создания карточки ${err.message}`,
-          });
+        throw new NotValidError(`Переданы некорректные данные в методы создания карточки`);
       }
-      res.status(500).send({ message: `Ошибка по умолчанию ${err}` });
     });
 };
 
@@ -50,15 +36,9 @@ export const deleteCard = (req: Request, res: Response) => {
     .findByIdAndDelete(cardId)
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
-      const ERROR_CODE = 400;
       if (err.name === "CastError") {
-        res
-          .status(ERROR_CODE)
-          .send({
-            message: `Карточка с указанным _id не найдена ${err.message}`,
-          });
+        throw new NotFoundError(`Карточка с указанным _id не найдена`);
       }
-      res.status(500).send({ message: `Ошибка по умолчанию ${err}` });
     });
 };
 
@@ -74,20 +54,11 @@ export const likeCard = (req: Request, res: Response) => {
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res
-          .status(400)
-          .send({
-            message: `Переданы некорректные данные в методы обновления профиля пользователя ${err.message}`,
-          });
+        throw new NotValidError(`Переданы некорректные данные в методы обновления профиля пользователя`);
       }
       if (err.message === "NotValidId") {
-        res
-          .status(404)
-          .send({
-            message: `Пользователь с указанным _id не найден ${err.message}`,
-          });
+        throw new NotFoundError(`Пользователь с указанным _id не найден`);
       }
-      res.status(500).send({ message: `Ошибка по умолчанию ${err}` });
     });
   };
 
@@ -103,19 +74,10 @@ export const dislikeCard = (req: Request, res: Response) => {
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res
-          .status(400)
-          .send({
-            message: `Переданы некорректные данные в методы обновления профиля пользователя ${err.message}`,
-          });
+        throw new NotValidError(`Переданы некорректные данные в методы обновления профиля пользователя`);
       }
       if (err.message === "NotValidId") {
-        res
-          .status(404)
-          .send({
-            message: `Пользователь с указанным _id не найден ${err.message}`,
-          });
+        throw new NotFoundError(`Пользователь с указанным _id не найден`);
       }
-      res.status(500).send({ message: `Ошибка по умолчанию ${err}` });
     });
 }
