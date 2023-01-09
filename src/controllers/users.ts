@@ -34,6 +34,23 @@ export const getUser = (req: Request, res: Response) => {
     });
 };
 
+export const getUserById = (req: Request, res: Response) => {
+  const id = req.params.userId;
+
+  return user
+    .findById(id)
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      if (err.name === "CastError") {
+        throw new NotValidError('Переданы некорректные данные')
+      }
+      if (err.name === "NotValidId") {
+        throw new NotFoundError(`Пользователь по указанному _id не найден`)
+      }
+    });
+};
+
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const {
     email,

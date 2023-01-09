@@ -5,6 +5,7 @@ import {
   getUser,
   patchUser,
   patchAvatarUser,
+  getUserById
 } from "../controllers/users";
 
 const router = Router();
@@ -25,15 +26,15 @@ router.get(
   "/:userId",
 
   celebrate({
-    headers: Joi.object().keys({
-      authorization: Joi.string(),
-    }),
-    body: Joi.object().keys({
+    params: Joi.object().keys({
       id: Joi.string().length(24).hex().required(),
     }),
+    headers: Joi.object().keys({
+      authorization: Joi.string(),
+    })
   }),
 
-  getUser
+  getUserById
 );
 
 router.get(
@@ -41,6 +42,9 @@ router.get(
   celebrate({
     headers: Joi.object().keys({
       authorization: Joi.string(),
+    }),
+    body: Joi.object().keys({
+      id: Joi.string().length(24).hex().required(),
     }),
   }),
   getUser
