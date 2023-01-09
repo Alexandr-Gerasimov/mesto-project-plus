@@ -1,5 +1,7 @@
+/* eslint-disable max-classes-per-file */
 export class NotFoundError extends Error {
   statusCode: number;
+
   constructor(message: string) {
     super(message);
     this.statusCode = 404;
@@ -8,6 +10,7 @@ export class NotFoundError extends Error {
 
 export class NotValidError extends Error {
   statusCode: number;
+
   constructor(message: string) {
     super(message);
     this.statusCode = 400;
@@ -16,6 +19,7 @@ export class NotValidError extends Error {
 
 export class AuthorizationError extends Error {
   statusCode: number;
+
   constructor(message: string) {
     super(message);
     this.statusCode = 401;
@@ -24,6 +28,7 @@ export class AuthorizationError extends Error {
 
 export class wrongAddressError extends Error {
   statusCode: number;
+
   constructor(message: string) {
     super(message);
     this.statusCode = 404;

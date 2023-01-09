@@ -1,8 +1,9 @@
 {
   "name": "mesto",
   "version": "1.0.0",
-  "description": "< Добавьте описание проекта в свободной форме >",
+  "description": "first project with Mongoose",
   "main": "dist/app.js",
+  "homepage": "https://github.com/AvaveryU/mesto_back",
   "scripts": {
     "lint": "npx eslint src/**/*.ts",
     "build": "tsc",
@@ -10,40 +11,35 @@
     "start": "ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Alexandr Gerasimov",
+  "author": "Avavery",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^9.0.0",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.6.3",
     "@types/validator": "^13.7.10",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.31.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.9.4"
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "celebrate": "^15.0.1",
-    "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "express-winston": "^4.2.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.2",
     "validator": "^13.7.0",
-    "winston": "^3.8.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Alexandr-Gerasimov/mesto-project-plus.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/Alexandr-Gerasimov/mesto-project-plus/issues"
-  },
-  "homepage": "https://github.com/Alexandr-Gerasimov/mesto-project-plus#readme"
+    "winston": "^3.8.2",
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
+"@typescript-eslint/parser": "^5.47.1"
+  }
 }
