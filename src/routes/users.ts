@@ -1,17 +1,17 @@
-import { Router } from "express";
-import { celebrate, Joi } from "celebrate";
+import { Router } from 'express';
+import { celebrate, Joi } from 'celebrate';
 import {
   getUsers,
   getUser,
   patchUser,
   patchAvatarUser,
-  getUserById
-} from "../controllers/users";
+  getUserById,
+} from '../controllers/users';
 
 const router = Router();
 
 router.get(
-  "/",
+  '/',
 
   celebrate({
     headers: Joi.object().keys({
@@ -19,11 +19,11 @@ router.get(
     }),
   }),
 
-  getUsers
+  getUsers,
 );
 
 router.get(
-  "/:userId",
+  '/:userId',
 
   celebrate({
     params: Joi.object().keys({
@@ -31,14 +31,14 @@ router.get(
     }),
     headers: Joi.object().keys({
       authorization: Joi.string(),
-    })
+    }),
   }),
 
-  getUserById
+  getUserById,
 );
 
 router.get(
-  "/me",
+  '/me',
   celebrate({
     headers: Joi.object().keys({
       authorization: Joi.string(),
@@ -47,11 +47,11 @@ router.get(
       id: Joi.string().length(24).hex().required(),
     }),
   }),
-  getUser
+  getUser,
 );
 
 router.patch(
-  "/me",
+  '/me',
   celebrate({
     params: Joi.object().keys({
       id: Joi.string().length(24).hex().required(),
@@ -64,22 +64,22 @@ router.patch(
       about: Joi.string().min(2).max(200),
     }),
   }),
-  patchUser
+  patchUser,
 );
 
 router.patch(
-  "/me/avatar",
+  '/me/avatar',
   celebrate({
     headers: Joi.object().keys({
       authorization: Joi.string(),
     }),
     body: Joi.object().keys({
       avatar: Joi.string().regex(
-        /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/
+        /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!]))?/,
       ),
     }),
   }),
-  patchAvatarUser
+  patchAvatarUser,
 );
 
 export default router;

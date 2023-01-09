@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+/* eslint-disable no-unused-vars */
+import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
@@ -11,7 +12,10 @@ interface IUser {
 }
 
 interface UserModel extends mongoose.Model<IUser> {
-  findUserByCredentials: (email: string, password: string) => Promise<mongoose.Document<unknown, any, IUser>>
+  findUserByCredentials: (
+    email: string,
+    password: string
+  ) => Promise<mongoose.Document<unknown, any, IUser>>;
 }
 
 const userSchema = new mongoose.Schema<IUser, UserModel>({
@@ -27,7 +31,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel>({
   password: {
     type: String,
     required: true,
-    select: false
+    select: false,
   },
   name: {
     type: String,
@@ -43,30 +47,34 @@ const userSchema = new mongoose.Schema<IUser, UserModel>({
   },
   avatar: {
     type: String,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    default:
+      'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (v: string) => validator.isURL(v),
       message: 'Неправильный формат ссылки',
     },
-    },
+  },
 });
 
-userSchema.static('findUserByCredentials', function findUserByCredentials(email: string, password: string) {
-  return this.findOne({ email }).select('+password')
-  .then((user) => {
-    if (!user) {
-      return Promise.reject(new Error('Неправильные почта или пароль'));
-    }
+userSchema.static(
+  'findUserByCredentials',
+  function findUserByCredentials(email, password) {
+    return this.findOne({ email })
+      .select('+password')
+      .then((user) => {
+        if (!user) {
+          return Promise.reject(new Error('Неправильные почта или пароль'));
+        }
 
-    return bcrypt.compare(password, user.password)
-    .then((matched) => {
-      if (!matched) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
-      }
+        return bcrypt.compare(password, user.password).then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error('Неправильные почта или пароль'));
+          }
 
-      return user;
-    });
-  });
-});
+          return user;
+        });
+      });
+  },
+);
 
 export default mongoose.model<IUser, UserModel>('user', userSchema);

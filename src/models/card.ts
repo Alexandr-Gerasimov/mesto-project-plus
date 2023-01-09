@@ -1,4 +1,4 @@
-import mongoose, { Schema, isValidObjectId } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 import validator from 'validator';
 
 interface Card {
@@ -6,7 +6,7 @@ interface Card {
   link: string;
   owner: Schema.Types.ObjectId;
   likes: Schema.Types.ObjectId;
-  createdAt: number
+  createdAt: number;
 }
 
 const cardSchema = new mongoose.Schema({
@@ -30,11 +30,11 @@ const cardSchema = new mongoose.Schema({
   },
   likes: {
     type: Array,
-    default: []
+    default: [],
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
 });
 

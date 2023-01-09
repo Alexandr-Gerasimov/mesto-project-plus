@@ -1,49 +1,80 @@
 import { Router } from 'express';
-import { celebrate, Joi } from "celebrate";
-import { getCards, createCard, deleteCard, likeCard, dislikeCard } from '../controllers/cards'
+import { celebrate, Joi } from 'celebrate';
+import {
+  getCards,
+  createCard,
+  deleteCard,
+  likeCard,
+  dislikeCard,
+} from '../controllers/cards';
 
 const router = Router();
 
-router.get('/', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string(),
-  })}), getCards)
+router.get(
+  '/',
+  celebrate({
+    headers: Joi.object().keys({
+      authorization: Joi.string(),
+    }),
+  }),
+  getCards,
+);
 
-router.post('/', celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string(),
+router.post(
+  '/',
+  celebrate({
+    headers: Joi.object().keys({
+      authorization: Joi.string(),
+    }),
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      link: Joi.string()
+        .required()
+        .regex(
+          /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!-]))?/,
+        ),
+    }),
   }),
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().regex(/(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/),
-  }),
-}),createCard)
+  createCard,
+);
 
-router.delete('/:cardId', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string(),
+router.delete(
+  '/:cardId',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string(),
+    }),
+    headers: Joi.object().keys({
+      authorization: Joi.string(),
+    }),
   }),
-  headers: Joi.object().keys({
-    authorization: Joi.string(),
-  }),
-}), deleteCard)
+  deleteCard,
+);
 
-router.put('/:cardId/likes', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().length(24).hex().required(),
+router.put(
+  '/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().length(24).hex().required(),
+    }),
+    headers: Joi.object().keys({
+      authorization: Joi.string(),
+    }),
   }),
-  headers: Joi.object().keys({
-    authorization: Joi.string(),
-  }),
-}), likeCard)
+  likeCard,
+);
 
-router.delete('/:cardId/likes', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().length(24).hex().required(),
+router.delete(
+  '/:cardId/likes',
+  celebrate({
+    params: Joi.object().keys({
+      cardId: Joi.string().length(24).hex().required(),
+    }),
+    headers: Joi.object().keys({
+      authorization: Joi.string(),
+    }),
   }),
-  headers: Joi.object().keys({
-    authorization: Joi.string(),
-  }),
-}), dislikeCard)
+  dislikeCard,
+);
 
 export default router;
