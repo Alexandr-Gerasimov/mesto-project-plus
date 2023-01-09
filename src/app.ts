@@ -54,11 +54,7 @@ app.use("/cards", cardsRouter);
 
 app.use(errorLogger);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err.name === 'Not Found') {
-    throw new wrongAddressError("Страница не найдена");
-  }
-});
+app.all('/*', (req, res) => res.status(404).json({ message: 'Страница не существует' }));
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).send({ message: `На сервере произошла ошибка ${err}` });
